@@ -1088,7 +1088,8 @@ function setupBackendAutoSaveTimer() {
     readConfig().then(config => {
         if (config.is_authorized && config.autoSaveEnabled && config.autoSaveTargetTag) {
             const intervalMinutes = config.autoSaveInterval > 0 ? config.autoSaveInterval : 30;
-            const intervalMilliseconds = intervalMinutes * 60 * 1000;
+            // 兼容历史配置中可能存在的小于 1 的间隔（如 0.5），此处强制拉回最小 1 分钟
+            let intervalMilliseconds = intervalMinutes * 60 * 1000;
             if (intervalMilliseconds < 60000) {
                  console.warn(`[Cloud Saves] 自动存档间隔 (${intervalMinutes}分钟) 过短，已调整为最少 1 分钟。`);
                  intervalMilliseconds = 60000;
